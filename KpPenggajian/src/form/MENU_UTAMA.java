@@ -27,13 +27,13 @@ public class MENU_UTAMA extends javax.swing.JFrame {
         jTextField2 = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        bDataPegawai = new javax.swing.JButton();
+        bUbahPassword = new javax.swing.JButton();
         jLabel5 = new javax.swing.JLabel();
-        jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
-        jButton5 = new javax.swing.JButton();
-        jButton6 = new javax.swing.JButton();
+        bDataGaji = new javax.swing.JButton();
+        bPenggajian = new javax.swing.JButton();
+        bLaporanPenggajian = new javax.swing.JButton();
+        bLogout = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -93,20 +93,45 @@ public class MENU_UTAMA extends javax.swing.JFrame {
 
         jPanel2.setBackground(new java.awt.Color(0, 204, 0));
 
-        jButton1.setText("DATA PEGAWAI");
+        bDataPegawai.setText("DATA PEGAWAI");
+        bDataPegawai.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bDataPegawaiActionPerformed(evt);
+            }
+        });
 
-        jButton2.setText("UBAH PASSWORD");
+        bUbahPassword.setText("UBAH PASSWORD");
+        bUbahPassword.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bUbahPasswordActionPerformed(evt);
+            }
+        });
 
         jLabel5.setFont(new java.awt.Font("Gadugi", 1, 14)); // NOI18N
         jLabel5.setText("MENU");
 
-        jButton3.setText("DATA GAJI");
+        bDataGaji.setText("DATA GAJI");
+        bDataGaji.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bDataGajiActionPerformed(evt);
+            }
+        });
 
-        jButton4.setText("PENGGAJIAN");
+        bPenggajian.setText("PENGGAJIAN");
+        bPenggajian.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bPenggajianActionPerformed(evt);
+            }
+        });
 
-        jButton5.setText("LAPORAN PENGGAJIAN");
+        bLaporanPenggajian.setText("LAPORAN PENGGAJIAN");
+        bLaporanPenggajian.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bLaporanPenggajianActionPerformed(evt);
+            }
+        });
 
-        jButton6.setText("LOGOUT");
+        bLogout.setText("LOGOUT");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -119,12 +144,12 @@ public class MENU_UTAMA extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(bDataPegawai, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(bUbahPassword, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(bDataGaji, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(bPenggajian, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(bLaporanPenggajian, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(bLogout, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -133,17 +158,17 @@ public class MENU_UTAMA extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jLabel5)
                 .addGap(37, 37, 37)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(bDataPegawai, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(bDataGaji, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(bPenggajian, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(bLaporanPenggajian, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(bUbahPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jButton6, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(bLogout, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(103, Short.MAX_VALUE))
         );
 
@@ -185,6 +210,43 @@ public class MENU_UTAMA extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void bDataPegawaiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bDataPegawaiActionPerformed
+        // TODO add your handling code here:
+        // Tambahkan logika untuk membuka jendela atau tindakan lainnya
+        // Misalnya:
+        DATA_PEGAWAI dataPegawaiForm = new DATA_PEGAWAI();
+        dataPegawaiForm.setVisible(true);
+        dispose();
+    }//GEN-LAST:event_bDataPegawaiActionPerformed
+
+    private void bDataGajiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bDataGajiActionPerformed
+        // TODO add your handling code here:
+        DATA_GAJI dataGaji = new DATA_GAJI();
+        dataGaji.setVisible(true);
+        dispose();
+    }//GEN-LAST:event_bDataGajiActionPerformed
+
+    private void bPenggajianActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bPenggajianActionPerformed
+        // TODO add your handling code here:
+        DATA_PENGGAJIAN dataPenggajian = new DATA_PENGGAJIAN();
+        dataPenggajian.setVisible(true);
+        dispose();
+    }//GEN-LAST:event_bPenggajianActionPerformed
+
+    private void bLaporanPenggajianActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bLaporanPenggajianActionPerformed
+        // TODO add your handling code here:
+        LAPORAN_PENGGAJIAN laporanPenggajian = new LAPORAN_PENGGAJIAN();
+        laporanPenggajian.setVisible(true);
+        dispose();
+    }//GEN-LAST:event_bLaporanPenggajianActionPerformed
+
+    private void bUbahPasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bUbahPasswordActionPerformed
+        // TODO add your handling code here:
+        UBAH_PASSWORD ubahPassword = new UBAH_PASSWORD();
+        ubahPassword.setVisible(true);
+        dispose();
+    }//GEN-LAST:event_bUbahPasswordActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -222,12 +284,12 @@ public class MENU_UTAMA extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
-    private javax.swing.JButton jButton6;
+    private javax.swing.JButton bDataGaji;
+    private javax.swing.JButton bDataPegawai;
+    private javax.swing.JButton bLaporanPenggajian;
+    private javax.swing.JButton bLogout;
+    private javax.swing.JButton bPenggajian;
+    private javax.swing.JButton bUbahPassword;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
