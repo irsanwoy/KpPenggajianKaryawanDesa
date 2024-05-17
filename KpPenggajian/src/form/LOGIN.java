@@ -35,7 +35,7 @@ public class LOGIN extends javax.swing.JFrame {
 
         try {
             Connection connection = Koneksi.getConnection();
-            String query = "SELECT * FROM users WHERE username = ? AND password = ?";
+            String query = "SELECT * FROM login WHERE username = ? AND password = ?";
             PreparedStatement ps = connection.prepareStatement(query);
             ps.setString(1, username);
             ps.setString(2, password);

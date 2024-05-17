@@ -3,6 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package form;
+import database.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -10,6 +11,7 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import javax.swing.table.DefaultTableModel;
 import java.text.SimpleDateFormat;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -24,7 +26,7 @@ public class DATA_PEGAWAI extends javax.swing.JFrame {
 
     public DATA_PEGAWAI() {
         initComponents();
-        setLocationRelativeTo(this);
+        setLocationRelativeTo(null);
         model = new DefaultTableModel();
         tblPegawai.setModel(model);
         model.addColumn("ID Pegawai");
@@ -32,12 +34,23 @@ public class DATA_PEGAWAI extends javax.swing.JFrame {
         model.addColumn("NIK");
         model.addColumn("Tanggal Lahir");
         model.addColumn("Jenis Kelamin");
+        model.addColumn("Alamat");
         loadDataPegawai();
-        bUbah.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                bUbahActionPerformed(evt);
-            }
-        });
+//        bUbah.addActionListener(new java.awt.event.ActionListener() {
+//            public void actionPerformed(java.awt.event.ActionEvent evt) {
+//                bUbahActionPerformed(evt);
+//            }
+//        });
+    }
+    
+    void hapus(){
+        tfIdPegawai.setText("");
+        tfNamaPegawai.setText("");
+        tfNik.setText("");
+        tfTtl.cleanup();
+        cbKelamin.setSelectedIndex(0);
+        jtAlamat.setText("");
+        
     }
     
     private void loadDataPegawai(){
@@ -52,8 +65,8 @@ public class DATA_PEGAWAI extends javax.swing.JFrame {
                     resultSet.getString("nama"),
                     resultSet.getString("nik"),
                     resultSet.getDate("tanggal_lahir"),
-                    resultSet.getString("alamat"),
-                    resultSet.getString("jenis_kelamin")
+                    resultSet.getString("jenis_kelamin"),
+                    resultSet.getString("alamat")
                 };
                 model.addRow(row);
             }
@@ -89,7 +102,8 @@ public class DATA_PEGAWAI extends javax.swing.JFrame {
             int rowsUpdated = preparedStatement.executeUpdate();
             if (rowsUpdated > 0) {
                 System.out.println("Data berhasil diubah.");
-                loadDataPegawai(); // Refresh table
+//                loadDataPegawai(); // Refresh table
+                  JOptionPane.showMessageDialog(null, "data berhasil diubah");
             }
 
             preparedStatement.close();
@@ -148,8 +162,8 @@ public class DATA_PEGAWAI extends javax.swing.JFrame {
         bBatal = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         tblPegawai = new javax.swing.JTable();
-        jTextField6 = new javax.swing.JTextField();
-        jLabel13 = new javax.swing.JLabel();
+        cari = new javax.swing.JTextField();
+        bCari = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -306,6 +320,11 @@ public class DATA_PEGAWAI extends javax.swing.JFrame {
         cbKelamin.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "laki-laki", "perempuan" }));
 
         bUbah.setText("UBAH");
+        bUbah.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                bUbahMouseClicked(evt);
+            }
+        });
         bUbah.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 bUbahActionPerformed(evt);
@@ -320,8 +339,23 @@ public class DATA_PEGAWAI extends javax.swing.JFrame {
         });
 
         bHapus.setText("HAPUS");
+        bHapus.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                bHapusMouseClicked(evt);
+            }
+        });
+        bHapus.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bHapusActionPerformed(evt);
+            }
+        });
 
         bBatal.setText("BATAL");
+        bBatal.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bBatalActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -408,7 +442,7 @@ public class DATA_PEGAWAI extends javax.swing.JFrame {
                     .addComponent(bSimpan)
                     .addComponent(bHapus)
                     .addComponent(bBatal))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(226, Short.MAX_VALUE))
         );
 
         tblPegawai.setModel(new javax.swing.table.DefaultTableModel(
@@ -422,9 +456,24 @@ public class DATA_PEGAWAI extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        tblPegawai.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblPegawaiMouseClicked(evt);
+            }
+        });
         jScrollPane2.setViewportView(tblPegawai);
 
-        jLabel13.setText("CARI");
+        bCari.setText("CARI");
+        bCari.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                bCariMouseClicked(evt);
+            }
+        });
+        bCari.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bCariActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -438,10 +487,10 @@ public class DATA_PEGAWAI extends javax.swing.JFrame {
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap())
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGap(28, 28, 28)
-                        .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(82, 82, 82)
+                        .addComponent(cari, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(bCari, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
         jPanel3Layout.setVerticalGroup(
@@ -450,8 +499,8 @@ public class DATA_PEGAWAI extends javax.swing.JFrame {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGap(8, 8, 8)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel13))
+                    .addComponent(cari, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(bCari))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 549, Short.MAX_VALUE)
                 .addContainerGap())
@@ -538,8 +587,100 @@ public class DATA_PEGAWAI extends javax.swing.JFrame {
 
     private void bUbahActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bUbahActionPerformed
         // TODO add your handling code here:
-        updateDataPegawai();
+                updateDataPegawai();
+                model.setRowCount(0); // Membersihkan data yang ada
+                loadDataPegawai(); // Memuat data yang baru
     }//GEN-LAST:event_bUbahActionPerformed
+
+    private void bUbahMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_bUbahMouseClicked
+        // TODO add your handling code here:
+    
+    }//GEN-LAST:event_bUbahMouseClicked
+
+    private void tblPegawaiMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblPegawaiMouseClicked
+        // TODO add your handling code here:
+        int baris = tblPegawai.rowAtPoint(evt.getPoint());
+        String id_pegawai = tblPegawai.getValueAt(baris, 0).toString();
+        tfIdPegawai.setText(id_pegawai);
+        String nama = tblPegawai.getValueAt(baris, 1).toString();
+        tfNamaPegawai.setText(nama);
+        String nik = tblPegawai.getValueAt(baris, 2).toString();
+        tfNik.setText(nik);
+        String ttl = tblPegawai.getValueAt(baris, 3).toString();
+        tfTtl.setToolTipText(ttl);
+        String alamat = tblPegawai.getValueAt(baris, 4).toString();
+        jtAlamat.setText(alamat);
+    }//GEN-LAST:event_tblPegawaiMouseClicked
+
+    private void bBatalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bBatalActionPerformed
+        // TODO add your handling code here:
+        tfIdPegawai.setText("");
+        tfNamaPegawai.setText("");
+        tfNik.setText("");
+        jtAlamat.setText("");
+    }//GEN-LAST:event_bBatalActionPerformed
+
+    private void bHapusMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_bHapusMouseClicked
+        // TODO add your handling code here:
+        
+    }//GEN-LAST:event_bHapusMouseClicked
+
+    private void bHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bHapusActionPerformed
+        // TODO add your handling code here:
+        try {
+            String sql = "DELETE FROM pegawai WHERE id_pegawai='" + tfIdPegawai.getText() + "'";
+
+            Connection con = (Connection) Koneksi.getConnection();
+            PreparedStatement pst = con.prepareStatement(sql);
+            pst.execute();
+            JOptionPane.showMessageDialog(null, "Data berhasil dihapus");
+            model.setRowCount(0);
+            loadDataPegawai();
+        } catch (Exception e) {
+            // Tanggapan terhadap eksepsi
+            JOptionPane.showMessageDialog(null, "Gagal menghapus data: " + e.getMessage());
+            e.printStackTrace(); // Menampilkan jejak stack trace
+
+            // Tambahkan pesan debug
+            System.out.println("Pesan Debug: " + e.getMessage());
+        }
+    }//GEN-LAST:event_bHapusActionPerformed
+
+    private void bCariMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_bCariMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_bCariMouseClicked
+
+    private void bCariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bCariActionPerformed
+        // TODO add your handling code here:
+        model.setRowCount(0); // Membersihkan data yang ada
+        try {
+            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/db_penggajian", "root", "");
+            String query = "SELECT * FROM pegawai WHERE id_pegawai LIKE ? OR nama LIKE ? OR nik LIKE ?";
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, "%" + cari.getText()  + "%");
+            preparedStatement.setString(2, "%" + cari.getText()  + "%");
+            preparedStatement.setString(3, "%" + cari.getText()  + "%");
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                Object[] row = {
+                    resultSet.getString("id_pegawai"),
+                    resultSet.getString("nama"),
+                    resultSet.getString("nik"),
+                    resultSet.getDate("tanggal_lahir"),
+                    resultSet.getString("jenis_kelamin"),
+                    resultSet.getString("alamat")
+                };
+                model.addRow(row);
+            }
+
+            resultSet.close();
+            preparedStatement.close();
+            connection.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }//GEN-LAST:event_bCariActionPerformed
 
     /**
      * @param args the command line arguments
@@ -581,9 +722,11 @@ public class DATA_PEGAWAI extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton bBatal;
+    private javax.swing.JButton bCari;
     private javax.swing.JButton bHapus;
     private javax.swing.JButton bSimpan;
     private javax.swing.JButton bUbah;
+    private javax.swing.JTextField cari;
     private javax.swing.JComboBox<String> cbKelamin;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
@@ -595,7 +738,6 @@ public class DATA_PEGAWAI extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
-    private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -612,7 +754,6 @@ public class DATA_PEGAWAI extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField6;
     private javax.swing.JTextArea jtAlamat;
     private javax.swing.JTable tblPegawai;
     private javax.swing.JTextField tfIdPegawai;
