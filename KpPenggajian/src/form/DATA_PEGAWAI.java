@@ -36,11 +36,6 @@ public class DATA_PEGAWAI extends javax.swing.JFrame {
         model.addColumn("Jenis Kelamin");
         model.addColumn("Alamat");
         loadDataPegawai();
-//        bUbah.addActionListener(new java.awt.event.ActionListener() {
-//            public void actionPerformed(java.awt.event.ActionEvent evt) {
-//                bUbahActionPerformed(evt);
-//            }
-//        });
     }
     
     void hapus(){
