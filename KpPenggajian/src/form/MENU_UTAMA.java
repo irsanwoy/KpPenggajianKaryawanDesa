@@ -1,13 +1,36 @@
 
 package form;
+import form.LOGIN;
 
 
 public class MENU_UTAMA extends javax.swing.JFrame {
-
+        private String userRole; 
 
     public MENU_UTAMA() {
         initComponents();
         setLocationRelativeTo(this);
+    }
+
+    // Konstruktor dengan parameter userRole
+    public MENU_UTAMA(String userRole) {
+        this.userRole = userRole;
+        initComponents();
+        setLocationRelativeTo(this);
+        setupMenu();
+    }
+    
+    private void setupMenu() {
+        if ("KAUR".equals(userRole)) {
+            bLaporanPenggajian.setEnabled(true);
+            bDataPegawai.setEnabled(true);
+            bDataGaji.setEnabled(true);
+            bPenggajian.setEnabled(true);
+        } else if ("KADES".equals(userRole)) {
+            bLaporanPenggajian.setEnabled(true);
+            bDataPegawai.setEnabled(false);
+            bDataGaji.setEnabled(false);
+            bPenggajian.setEnabled(false);
+        }
     }
 
     /**
@@ -252,6 +275,9 @@ public class MENU_UTAMA extends javax.swing.JFrame {
 
     private void bLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bLogoutActionPerformed
         // TODO add your handling code here:
+        LOGIN login = new LOGIN();
+        login.setVisible(true);
+        dispose();
     }//GEN-LAST:event_bLogoutActionPerformed
 
     /**

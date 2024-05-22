@@ -10,7 +10,7 @@ import javax.swing.*;
  * @author USER
  */
 public class LOGIN extends javax.swing.JFrame {
-
+     private String userRole;
     /**
      * Creates new form LOGIN
      */
@@ -18,21 +18,14 @@ public class LOGIN extends javax.swing.JFrame {
         initComponents();
         setLocationRelativeTo(this);
         
-        bLogin.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                login();
-            }
-        });
     }
     
     private void login() {
         String username = tfUsername.getText();
         String password = tfPassword.getText();
 
-        try {
+       try {
             Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/db_penggajian", "root", "");
-//            Connection connection = Koneksi.getConnection();
             String query = "SELECT * FROM users WHERE username = ? AND password = ?";
             PreparedStatement ps = connection.prepareStatement(query);
             ps.setString(1, username);
@@ -40,24 +33,11 @@ public class LOGIN extends javax.swing.JFrame {
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
-                String role = rs.getString("role");
-                switch (role) {
-                    case "KAUR":
-                        JOptionPane.showMessageDialog(null, "Login berhasil sebagai KAUR");
-                        MENU_UTAMA menuUtamaKaur = new MENU_UTAMA();
-                        menuUtamaKaur.setVisible(true);
-                        dispose(); // Tutup JFrame LOGIN
-                        break;
-                    case "KADES":
-                        JOptionPane.showMessageDialog(null, "Login berhasil sebagai KADES");
-                        MENU_UTAMA menuUtamaKades = new MENU_UTAMA();
-                        menuUtamaKades.setVisible(true);
-                        dispose(); // Tutup JFrame LOGIN
-                        break;
-                    default:
-                        JOptionPane.showMessageDialog(null, "Login gagal. Role tidak valid.");
-                        break;
-                }
+                userRole = rs.getString("role");
+                JOptionPane.showMessageDialog(null, "Login berhasil sebagai " + userRole);
+                MENU_UTAMA menuUtama = new MENU_UTAMA(userRole);
+                menuUtama.setVisible(true);
+                dispose(); // Tutup JFrame LOGIN
             } else {
                 JOptionPane.showMessageDialog(null, "Login gagal. Username atau password salah.");
             }
@@ -173,10 +153,12 @@ public class LOGIN extends javax.swing.JFrame {
 
     private void bLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bLoginActionPerformed
         // TODO add your handling code here:
+        
     }//GEN-LAST:event_bLoginActionPerformed
 
     private void bLoginMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_bLoginMouseClicked
         // TODO add your handling code here:
+        login();
     }//GEN-LAST:event_bLoginMouseClicked
 
     /**
