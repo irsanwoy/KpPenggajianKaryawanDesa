@@ -1,7 +1,4 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
+
 package form;
 import database.*;
 import java.sql.Connection;
@@ -66,6 +63,8 @@ private void loadDataPenggajian() {
         statement.close();
         connection.close();
     } catch (SQLException e) {
+        e.printStackTrace();
+        JOptionPane.showMessageDialog(this, "Gagal memuat data penggajian: "+ e.getMessage());
     }
 }
 
@@ -685,7 +684,7 @@ private int getValidPegawaiId(String nik) {
     private void bUbahActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bUbahActionPerformed
         // TODO add your handling code here:
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-    String tanggalLahir = dateFormat.format(jdTtl.getDate());
+    String periode = dateFormat.format(jdTtl.getDate());
     
     try {
         Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/db_penggajian", "root", "");
@@ -700,7 +699,7 @@ private int getValidPegawaiId(String nik) {
         }
         
         statement.setInt(1, pegawaiId); // Pegawai ID
-        statement.setString(2, tanggalLahir); // Periode
+        statement.setString(2, periode); // Periode
         statement.setDouble(3, Double.parseDouble(tfGajiPokok.getText()) + Double.parseDouble(tfTunjangan.getText()) - Double.parseDouble(tfPotongan.getText())); // Total Gaji
         statement.setInt(4, Integer.parseInt(tfId.getText())); // ID Penggajian
 
@@ -710,7 +709,7 @@ private int getValidPegawaiId(String nik) {
         
         model.setRowCount(0); 
         loadDataPenggajian();
-        JOptionPane.showMessageDialog(this, "Data berhasil diubah");
+        JOptionPane.showMessageDialog(this, "Data berhasil disimpan");
     } catch (SQLException e) {
         e.printStackTrace();
         JOptionPane.showMessageDialog(this, "Gagal mengubah data");
