@@ -132,6 +132,11 @@ public class MENU_UTAMA extends javax.swing.JFrame {
         });
 
         bLogout.setText("LOGOUT");
+        bLogout.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bLogoutActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -211,9 +216,7 @@ public class MENU_UTAMA extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void bDataPegawaiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bDataPegawaiActionPerformed
-        // TODO add your handling code here:
-        // Tambahkan logika untuk membuka jendela atau tindakan lainnya
-        // Misalnya:
+
         DATA_PEGAWAI dataPegawaiForm = new DATA_PEGAWAI();
         dataPegawaiForm.setVisible(true);
         dispose();
@@ -246,6 +249,10 @@ public class MENU_UTAMA extends javax.swing.JFrame {
         ubahPassword.setVisible(true);
         dispose();
     }//GEN-LAST:event_bUbahPasswordActionPerformed
+
+    private void bLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bLogoutActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_bLogoutActionPerformed
 
     /**
      * @param args the command line arguments

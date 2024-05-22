@@ -59,33 +59,33 @@ private DefaultTableModel model;
     }
 }
 
-    private void updateDataGaji() {
-        String id_gaji = tfIdGaji.getText();
-        String gajiPokok = tfGajiPokok.getText();
-        String tunjangan = tfTunjangan.getText();
-        String potongan = tfPotongan.getText();
+private void updateDataGaji() {
+    String id_gaji = tfIdGaji.getText();
+    String gajiPokok = tfGajiPokok.getText();
+    String tunjangan = tfTunjangan.getText();
+    String potongan = tfPotongan.getText();
 
-        try {
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/db_penggajian", "root", "");
-            String query = "UPDATE data_gaji SET  gaji_pokok=?, tunjangan=?, potongan=?";
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setString(1, gajiPokok);
-            preparedStatement.setString(2, tunjangan);
-            preparedStatement.setString(3, potongan);
+    try {
+        Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/db_penggajian", "root", "");
+        String query = "UPDATE data_gaji SET gaji_pokok = ?, tunjangan = ?, potongan = ? WHERE id = ?";
+        PreparedStatement preparedStatement = connection.prepareStatement(query);
+        preparedStatement.setString(1, gajiPokok);
+        preparedStatement.setString(2, tunjangan);
+        preparedStatement.setString(3, potongan);
+        preparedStatement.setString(4, id_gaji);
 
-            int rowsUpdated = preparedStatement.executeUpdate();
-            if (rowsUpdated > 0) {
-                System.out.println("Data berhasil diubah.");
-//                loadDataPegawai(); // Refresh table
-                  JOptionPane.showMessageDialog(null, "data berhasil diubah");
-            }
-
-            preparedStatement.close();
-            connection.close();
-        } catch (Exception e) {
-            e.printStackTrace();
+        int rowsUpdated = preparedStatement.executeUpdate();
+        if (rowsUpdated > 0) {
+            System.out.println("Data berhasil diubah.");
+            JOptionPane.showMessageDialog(null, "Data berhasil diubah");
         }
+
+        preparedStatement.close();
+        connection.close();
+    } catch (Exception e) {
+        e.printStackTrace();
     }
+}
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -132,6 +132,7 @@ private DefaultTableModel model;
         bCari = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setPreferredSize(new java.awt.Dimension(1003, 558));
 
         jPanel1.setBackground(new java.awt.Color(0, 204, 0));
 
@@ -189,17 +190,42 @@ private DefaultTableModel model;
         jPanel2.setBackground(new java.awt.Color(0, 204, 0));
 
         jButton1.setText("DATA PEGAWAI");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         jButton2.setText("UBAH PASSWORD");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         jLabel5.setFont(new java.awt.Font("Gadugi", 1, 14)); // NOI18N
         jLabel5.setText("MENU");
 
         jButton3.setText("DATA GAJI");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
 
         jButton4.setText("PENGGAJIAN");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
 
         jButton5.setText("LAPORAN PENGGAJIAN");
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
 
         jButton6.setText("LOGOUT");
 
@@ -588,6 +614,41 @@ private DefaultTableModel model;
             e.printStackTrace();
         }
     }//GEN-LAST:event_bCariActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        DATA_PEGAWAI dataPegawaiForm = new DATA_PEGAWAI();
+        dataPegawaiForm.setVisible(true);
+        dispose();
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        // TODO add your handling code here:
+        DATA_GAJI dataGaji = new DATA_GAJI();
+        dataGaji.setVisible(true);
+        dispose();
+    }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        // TODO add your handling code here:
+        DATA_PENGGAJIAN dataPenggajian = new DATA_PENGGAJIAN();
+        dataPenggajian.setVisible(true);
+        dispose();
+    }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        // TODO add your handling code here:
+        LAPORAN_PENGGAJIAN laporanPenggajian = new LAPORAN_PENGGAJIAN();
+        laporanPenggajian.setVisible(true);
+        dispose();
+    }//GEN-LAST:event_jButton5ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+        UBAH_PASSWORD ubahPassword = new UBAH_PASSWORD();
+        ubahPassword.setVisible(true);
+        dispose();
+    }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
      * @param args the command line arguments
