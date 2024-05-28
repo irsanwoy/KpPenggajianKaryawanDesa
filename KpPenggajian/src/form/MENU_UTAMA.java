@@ -267,10 +267,7 @@ public class MENU_UTAMA extends javax.swing.JFrame {
     }//GEN-LAST:event_bLaporanPenggajianActionPerformed
 
     private void bUbahPasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bUbahPasswordActionPerformed
-        // TODO add your handling code here:
-        UBAH_PASSWORD ubahPassword = new UBAH_PASSWORD();
-        ubahPassword.setVisible(true);
-        dispose();
+      
     }//GEN-LAST:event_bUbahPasswordActionPerformed
 
     private void bLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bLogoutActionPerformed

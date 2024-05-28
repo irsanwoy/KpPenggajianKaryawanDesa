@@ -15,7 +15,6 @@ public class Koneksi {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
-            JOptionPane.showMessageDialog(null, "Koneksi berhasil");
         } catch (ClassNotFoundException e) {
             throw new SQLException("MySQL JDBC Driver not found", e);
         }
@@ -32,16 +31,7 @@ public class Koneksi {
         }
     }
     
-    public static void main(String[] args) {
-        try {
-            Connection connection = Koneksi.getConnection();
-            JOptionPane.showMessageDialog(null, "Koneksi berhasil");
-            Koneksi.closeConnection(connection);
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(null, "Koneksi gagal: " + ex.getMessage());
-        }
-        // Lanjutkan aplikasi Anda...
-    }
+
     
     
     

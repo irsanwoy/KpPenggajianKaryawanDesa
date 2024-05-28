@@ -1,60 +1,56 @@
 
 package form;
 import database.*;
+import java.awt.Color;
+import java.awt.Font;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import javax.swing.table.DefaultTableModel;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
-/**
- *
- * @author USER
- */
 public class DATA_PENGGAJIAN extends javax.swing.JFrame {
-    private DefaultTableModel model;
-    /**
-     * Creates new form LOGIN
-     */
+private DefaultTableModel model;
+
     public DATA_PENGGAJIAN() {
         initComponents();
-        setLocationRelativeTo(null);
+        setLocationRelativeTo(this);
         model = new DefaultTableModel();
-        tblDataPenggajian.setModel(model);
-        model.addColumn("ID Penggajian");
-        model.addColumn("Periode");
-        model.addColumn("NIK");
-        model.addColumn("Jabatan");
-        model.addColumn("Gaji Pokok");
-        model.addColumn("Tunjangan");
-        model.addColumn("Potongan");
-        loadDataPenggajian();
+        tblGaji.setModel(model);
+        model.addColumn("ID PENGGAJIAN");
+        model.addColumn("ID PEGAWAI");
+        model.addColumn("ID GAJI");
+        model.addColumn("PERIODE");
+        model.addColumn("Total Gaji");
+        loadDataPegawai();
+        loadComboBoxData();
     }
-
-private void loadDataPenggajian() {
+    
+    
+    
+    
+    private void loadDataPegawai(){
     try {
-        model.setRowCount(0); // Hapus data yang ada
-        Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/db_penggajian", "root", "");
+        Connection connection = Koneksi.getConnection();
         Statement statement = connection.createStatement();
-        String sql = "SELECT p.id, p.periode, k.nik, k.jabatan, g.gaji_pokok, g.tunjangan, g.potongan " +
-                     "FROM penggajian p " +
-                     "JOIN pegawai k ON p.pegawai_id = k.id_pegawai " +
-                     "JOIN data_gaji g ON p.pegawai_id = g.pegawai_id";
-        ResultSet resultSet = statement.executeQuery(sql);
+        ResultSet resultSet = statement.executeQuery("SELECT id, pegawai_id, gaji_id, periode, total_gaji FROM penggajian");
 
         while (resultSet.next()) {
             Object[] row = {
                 resultSet.getString("id"),
+                resultSet.getString("pegawai_id"),
+                resultSet.getString("gaji_id"),
                 resultSet.getString("periode"),
-                resultSet.getString("nik"),
-                resultSet.getString("jabatan"),
-                resultSet.getString("gaji_pokok"),
-                resultSet.getString("tunjangan"),
-                resultSet.getString("potongan")
+                resultSet.getString("total_gaji")
             };
             model.addRow(row);
         }
@@ -62,19 +58,84 @@ private void loadDataPenggajian() {
         resultSet.close();
         statement.close();
         connection.close();
-    } catch (SQLException e) {
+    } catch (Exception e) {
         e.printStackTrace();
-        JOptionPane.showMessageDialog(this, "Gagal memuat data penggajian: "+ e.getMessage());
     }
 }
 
+ private void loadComboBoxData() {
+        try {
+            Connection connection = Koneksi.getConnection();
+            Statement statement = connection.createStatement();
 
+            // Load data for jcIdPegawai
+            ResultSet rsPegawai = statement.executeQuery("SELECT id_pegawai FROM pegawai");
+            jcIdPegawai.removeAllItems();
+            while (rsPegawai.next()) {
+                jcIdPegawai.addItem(rsPegawai.getString("id_pegawai"));
+            }
+            rsPegawai.close();
+
+            // Load data for jcIdGaji
+            ResultSet rsGaji = statement.executeQuery("SELECT id FROM data_gaji");
+            jcIdGaji.removeAllItems();
+            while (rsGaji.next()) {
+                jcIdGaji.addItem(rsGaji.getString("id"));
+            }
+            rsGaji.close();
+
+            statement.close();
+            connection.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+ private void loadPegawaiDetails(String idPegawai) {
+        try {
+            Connection connection = Koneksi.getConnection();
+            String query = "SELECT nama FROM pegawai WHERE id_pegawai = ?";
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, idPegawai);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                tfNamaPegawai.setText(resultSet.getString("nama"));
+            }
+
+            resultSet.close();
+            preparedStatement.close();
+            connection.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+private void loadGajiDetails(String idGaji) {
+        try {
+            Connection connection = Koneksi.getConnection();
+            String query = "SELECT total_gaji FROM data_gaji WHERE id = ?";
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, idGaji);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                tfTotalGaji.setText(resultSet.getString("total_gaji"));
+            }
+
+            resultSet.close();
+            preparedStatement.close();
+            connection.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+private void updateDataGaji() {
     
-    /**
-     * This method is called from within the constructor to initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is always
-     * regenerated by the Form Editor.
-     */
+}
+
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -98,33 +159,28 @@ private void loadDataPenggajian() {
         jPanel4 = new javax.swing.JPanel();
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
-        tfId = new javax.swing.JTextField();
         jLabel8 = new javax.swing.JLabel();
-        tfJabatan = new javax.swing.JTextField();
         jLabel9 = new javax.swing.JLabel();
-        tfNik = new javax.swing.JTextField();
         jLabel10 = new javax.swing.JLabel();
-        jdTtl = new com.toedter.calendar.JDateChooser();
-        jLabel11 = new javax.swing.JLabel();
-        jLabel12 = new javax.swing.JLabel();
-        bUbah = new javax.swing.JButton();
-        bSimpan = new javax.swing.JButton();
-        bHapus = new javax.swing.JButton();
-        bBatal = new javax.swing.JButton();
-        jButton11 = new javax.swing.JButton();
-        tfGajiPokok = new javax.swing.JTextField();
-        tfTunjangan = new javax.swing.JTextField();
-        jLabel14 = new javax.swing.JLabel();
-        tfPotongan = new javax.swing.JTextField();
         bGaji = new javax.swing.JButton();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        tblDataPenggajian = new javax.swing.JTable();
-        tfCari = new javax.swing.JTextField();
+        tfTotalGaji = new javax.swing.JTextField();
+        jcIdPegawai = new javax.swing.JComboBox<>();
+        jcIdGaji = new javax.swing.JComboBox<>();
+        tfIdPenggajian = new javax.swing.JTextField();
+        jLabel11 = new javax.swing.JLabel();
+        tfNamaPegawai = new javax.swing.JTextField();
+        bHapus = new javax.swing.JButton();
+        bUbah = new javax.swing.JButton();
         jLabel13 = new javax.swing.JLabel();
+        jdPeriode = new com.toedter.calendar.JDateChooser();
+        bBatal = new javax.swing.JButton();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        tblGaji = new javax.swing.JTable();
+        tfCari = new javax.swing.JTextField();
         bCari = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setPreferredSize(new java.awt.Dimension(1003, 558));
+        setPreferredSize(new java.awt.Dimension(1002, 558));
 
         jPanel1.setBackground(new java.awt.Color(0, 204, 0));
 
@@ -220,6 +276,11 @@ private void loadDataPenggajian() {
         });
 
         jButton6.setText("LOGOUT");
+        jButton6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton6ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -265,49 +326,59 @@ private void loadDataPenggajian() {
         jPanel4.setBackground(new java.awt.Color(0, 204, 0));
 
         jLabel6.setFont(new java.awt.Font("Gadugi", 1, 14)); // NOI18N
-        jLabel6.setText("DATA PENGGAJIAN");
+        jLabel6.setText("PENGGAJIAN");
 
-        jLabel7.setText("ID Penggajian");
+        jLabel7.setText("ID PENGGAJIAN");
 
-        tfId.addActionListener(new java.awt.event.ActionListener() {
+        jLabel8.setText("ID PEGAWAI");
+
+        jLabel9.setText("ID GAJI");
+
+        jLabel10.setText("NAMA PEGAWAI");
+
+        bGaji.setText("GAJI");
+        bGaji.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                bGajiMouseClicked(evt);
+            }
+        });
+        bGaji.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                tfIdActionPerformed(evt);
+                bGajiActionPerformed(evt);
             }
         });
 
-        jLabel8.setText("Tanggal Lahir");
-
-        tfJabatan.addActionListener(new java.awt.event.ActionListener() {
+        tfTotalGaji.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                tfJabatanActionPerformed(evt);
+                tfTotalGajiActionPerformed(evt);
             }
         });
 
-        jLabel9.setText("NIK");
-
-        tfNik.addActionListener(new java.awt.event.ActionListener() {
+        jcIdPegawai.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jcIdPegawai.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                tfNikActionPerformed(evt);
+                jcIdPegawaiActionPerformed(evt);
             }
         });
 
-        jLabel10.setText("Jabatan");
-
-        jLabel11.setText("Tunjagan ");
-
-        jLabel12.setText("Gaji Pokok");
-
-        bUbah.setText("UBAH");
-        bUbah.addActionListener(new java.awt.event.ActionListener() {
+        jcIdGaji.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jcIdGaji.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                bUbahActionPerformed(evt);
+                jcIdGajiActionPerformed(evt);
             }
         });
 
-        bSimpan.setText("SIMPAN");
-        bSimpan.addActionListener(new java.awt.event.ActionListener() {
+        tfIdPenggajian.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                bSimpanActionPerformed(evt);
+                tfIdPenggajianActionPerformed(evt);
+            }
+        });
+
+        jLabel11.setText("TOTAL GAJI");
+
+        tfNamaPegawai.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tfNamaPegawaiActionPerformed(evt);
             }
         });
 
@@ -318,6 +389,15 @@ private void loadDataPenggajian() {
             }
         });
 
+        bUbah.setText("UBAH'");
+        bUbah.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bUbahActionPerformed(evt);
+            }
+        });
+
+        jLabel13.setText("PERIODE");
+
         bBatal.setText("BATAL");
         bBatal.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -325,136 +405,88 @@ private void loadDataPenggajian() {
             }
         });
 
-        jButton11.setText("PEGAWAI");
-
-        tfGajiPokok.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                tfGajiPokokActionPerformed(evt);
-            }
-        });
-
-        tfTunjangan.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                tfTunjanganActionPerformed(evt);
-            }
-        });
-
-        jLabel14.setText("Potongan");
-
-        tfPotongan.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                tfPotonganActionPerformed(evt);
-            }
-        });
-
-        bGaji.setText("GAJI");
-
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addGap(99, 99, 99)
-                        .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(tfTotalGaji, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel4Layout.createSequentialGroup()
-                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(26, 26, 26))
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jLabel8, javax.swing.GroupLayout.DEFAULT_SIZE, 109, Short.MAX_VALUE)
+                            .addComponent(jLabel9, javax.swing.GroupLayout.DEFAULT_SIZE, 109, Short.MAX_VALUE)
+                            .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addGroup(jPanel4Layout.createSequentialGroup()
-                                .addComponent(bSimpan, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(bUbah, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(bHapus, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(17, 17, 17)
-                                .addComponent(bBatal, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addGap(6, 6, 6)
+                                .addComponent(jLabel13, javax.swing.GroupLayout.DEFAULT_SIZE, 103, Short.MAX_VALUE)))
+                        .addGap(15, 15, 15)
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, 141, Short.MAX_VALUE)
+                            .addComponent(tfIdPenggajian)
+                            .addComponent(jcIdPegawai, 0, 141, Short.MAX_VALUE)
+                            .addComponent(jcIdGaji, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jdPeriode, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel4Layout.createSequentialGroup()
-                                .addComponent(jLabel14)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(bGaji, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel4Layout.createSequentialGroup()
-                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(2, 2, 2)
-                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(tfId, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(tfNik, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jdTtl, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGroup(jPanel4Layout.createSequentialGroup()
-                                        .addComponent(tfJabatan, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(34, 34, 34)
-                                        .addComponent(jButton11, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE))))))
+                        .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(21, 21, 21)
+                        .addComponent(tfNamaPegawai, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(tfPotongan, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel4Layout.createSequentialGroup()
-                                    .addComponent(jLabel11)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(tfTunjangan, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel4Layout.createSequentialGroup()
-                                    .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                    .addComponent(tfGajiPokok, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE))))))
-                .addContainerGap(18, Short.MAX_VALUE))
+                        .addComponent(bUbah, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(bHapus, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(bBatal, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(129, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(bGaji, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(39, 39, 39))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
-                .addGap(16, 16, 16)
+                .addContainerGap()
                 .addComponent(jLabel6)
-                .addGap(18, 18, 18)
+                .addGap(28, 28, 28)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(tfId, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(tfIdPenggajian, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jdTtl, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jcIdPegawai, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(tfNik, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(jcIdGaji, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jdPeriode, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(19, 19, 19)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(tfJabatan, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton11))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel12)
-                    .addComponent(tfGajiPokok, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                    .addComponent(tfNamaPegawai, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(60, 60, 60)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(tfTunjangan, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(tfPotongan, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(bGaji)
-                .addGap(71, 71, 71)
+                    .addComponent(tfTotalGaji, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(bUbah)
-                    .addComponent(bSimpan)
                     .addComponent(bHapus)
                     .addComponent(bBatal))
-                .addContainerGap(226, Short.MAX_VALUE))
+                .addGap(9, 9, 9)
+                .addComponent(bGaji, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        tblDataPenggajian.setModel(new javax.swing.table.DefaultTableModel(
+        tblGaji.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -465,14 +497,12 @@ private void loadDataPenggajian() {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        tblDataPenggajian.addMouseListener(new java.awt.event.MouseAdapter() {
+        tblGaji.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                tblDataPenggajianMouseClicked(evt);
+                tblGajiMouseClicked(evt);
             }
         });
-        jScrollPane2.setViewportView(tblDataPenggajian);
-
-        jLabel13.setText("CARI");
+        jScrollPane2.setViewportView(tblGaji);
 
         bCari.setText("CARI");
         bCari.addActionListener(new java.awt.event.ActionListener() {
@@ -489,29 +519,25 @@ private void loadDataPenggajian() {
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap())
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGap(28, 28, 28)
-                        .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGap(26, 26, 26)
                         .addComponent(tfCari, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(bCari, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                        .addContainerGap())
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 541, javax.swing.GroupLayout.PREFERRED_SIZE))))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGap(8, 8, 8)
+                .addContainerGap(75, Short.MAX_VALUE)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(tfCari, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel13)
                     .addComponent(bCari))
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 571, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 536, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -539,216 +565,124 @@ private void loadDataPenggajian() {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void tfIdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfIdActionPerformed
+    private void tfTotalGajiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfTotalGajiActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_tfIdActionPerformed
+    }//GEN-LAST:event_tfTotalGajiActionPerformed
 
-    private void tfJabatanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfJabatanActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_tfJabatanActionPerformed
-
-    private void tfNikActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfNikActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_tfNikActionPerformed
-
-    private void tfGajiPokokActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfGajiPokokActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_tfGajiPokokActionPerformed
-
-    private void tfTunjanganActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfTunjanganActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_tfTunjanganActionPerformed
-
-    private void tfPotonganActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfPotonganActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_tfPotonganActionPerformed
-
-    private void bSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bSimpanActionPerformed
-    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-    String tanggalLahir = dateFormat.format(jdTtl.getDate());
-    
-    try {
-        Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/db_penggajian", "root", "");
-        String sql = "INSERT INTO penggajian (pegawai_id, periode, total_gaji) VALUES (?, ?, ?)";
-        PreparedStatement statement = connection.prepareStatement(sql);
+    private void tblGajiMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblGajiMouseClicked
+      try {
+        int baris = tblGaji.rowAtPoint(evt.getPoint());
         
-        // Pastikan pegawai_id yang valid dari tabel pegawai
-        int pegawaiId = getValidPegawaiId(tfNik.getText());
-        if (pegawaiId == -1) {
-            JOptionPane.showMessageDialog(this, "Pegawai dengan NIK tersebut tidak ditemukan.");
-            return;
+        Object id_penggajianObj = tblGaji.getValueAt(baris, 0);
+        String id_penggajian = (id_penggajianObj != null) ? id_penggajianObj.toString() : "";
+        tfIdPenggajian.setText(id_penggajian);
+        
+        Object id_pegawaiObj = tblGaji.getValueAt(baris, 1);
+        String id_pegawai = (id_pegawaiObj != null) ? id_pegawaiObj.toString() : "";
+        jcIdPegawai.setSelectedItem(id_pegawai);
+        
+        Object id_gajiObj = tblGaji.getValueAt(baris, 2);
+        String id_gaji = (id_gajiObj != null) ? id_gajiObj.toString() : "";
+        jcIdGaji.setSelectedItem(id_gaji);
+        
+        Object periodeObj = tblGaji.getValueAt(baris, 3);
+        if (periodeObj != null) {
+            String periode = periodeObj.toString();
+            java.util.Date date = new SimpleDateFormat("yyyy-MM-dd").parse(periode);
+            jdPeriode.setDate(date);
+        } else {
+            jdPeriode.setDate(null);
         }
         
-        statement.setInt(1, pegawaiId); // Pegawai ID
-        statement.setString(2, tanggalLahir); // Periode (menggunakan Tanggal Lahir sebagai contoh)
-        statement.setDouble(3, Double.parseDouble(tfGajiPokok.getText()) + Double.parseDouble(tfTunjangan.getText()) - Double.parseDouble(tfPotongan.getText())); // Total Gaji
-
-        statement.executeUpdate();
-        statement.close();
-        connection.close();
-        model.setRowCount(0); 
-        loadDataPenggajian();
-        JOptionPane.showMessageDialog(this, "Data berhasil disimpan");
-    } catch (SQLException e) {
-        e.printStackTrace();
-        JOptionPane.showMessageDialog(this, "Gagal menyimpan data");
-    }
-}
-
-private int getValidPegawaiId(String nik) {
-    int pegawaiId = -1;
-    try {
-        Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/db_penggajian", "root", "");
-        String sql = "SELECT id_pegawai FROM pegawai WHERE nik = ?";
-        PreparedStatement statement = connection.prepareStatement(sql);
-        statement.setString(1, nik);
-        ResultSet resultSet = statement.executeQuery();
-        if (resultSet.next()) {
-            pegawaiId = resultSet.getInt("id_pegawai");
-        }
-        resultSet.close();
-        statement.close();
-        connection.close();
-    } catch (SQLException e) {
-        e.printStackTrace();
-    }
-    return pegawaiId;
-
-
-    }//GEN-LAST:event_bSimpanActionPerformed
-
-    private void bHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bHapusActionPerformed
-        // TODO add your handling code here:
-        try {
-        Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/db_penggajian", "root", "");
-        String sql = "DELETE FROM penggajian WHERE id=?";
-        PreparedStatement statement = connection.prepareStatement(sql);
-        statement.setInt(1, Integer.parseInt(tfId.getText())); // ID Penggajian
-
-        statement.executeUpdate();
-        statement.close();
-        connection.close();
-         model.setRowCount(0); 
-
-        loadDataPenggajian();
-        JOptionPane.showMessageDialog(this, "Data berhasil dihapus");
-    } catch (SQLException e) {
-        e.printStackTrace();
-        JOptionPane.showMessageDialog(this, "Gagal menghapus data");
-    }
-    }//GEN-LAST:event_bHapusActionPerformed
-
-    private void tblDataPenggajianMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblDataPenggajianMouseClicked
-        // TODO add your handling code here:
-        int baris = tblDataPenggajian.rowAtPoint(evt.getPoint());
-    
-    String idPenggajian = tblDataPenggajian.getValueAt(baris, 0).toString();
-    tfId.setText(idPenggajian);
-    
-    String periode = tblDataPenggajian.getValueAt(baris, 1).toString();
-    try {
-        java.util.Date date = new SimpleDateFormat("yyyy-MM-dd").parse(periode);
-        jdTtl.setDate(date);
-    } catch (Exception e) {
-        e.printStackTrace();
-    }
-
-    String nik = tblDataPenggajian.getValueAt(baris, 2).toString();
-    tfNik.setText(nik);
-
-    String jabatan = tblDataPenggajian.getValueAt(baris, 3).toString();
-    tfJabatan.setText(jabatan);
-
-    String gajiPokok = tblDataPenggajian.getValueAt(baris, 4).toString();
-    tfGajiPokok.setText(gajiPokok);
-
-    String tunjangan = tblDataPenggajian.getValueAt(baris, 5).toString();
-    tfTunjangan.setText(tunjangan);
-
-    String potongan = tblDataPenggajian.getValueAt(baris, 6).toString();
-    tfPotongan.setText(potongan);
-    }//GEN-LAST:event_tblDataPenggajianMouseClicked
-
-    private void bBatalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bBatalActionPerformed
-        // TODO add your handling code here:
-          tfId.setText("");
-            jdTtl.setDate(null); // Mengosongkan JDateChooser
-            tfNik.setText("");
-            tfJabatan.setText("");
-            tfGajiPokok.setText("");
-            tfTunjangan.setText("");
-            tfPotongan.setText("");
+        Object total_gajiObj = tblGaji.getValueAt(baris, 4);
+        String total_gaji = (total_gajiObj != null) ? total_gajiObj.toString() : "";
+        tfTotalGaji.setText(total_gaji);
         
-    }//GEN-LAST:event_bBatalActionPerformed
+    } catch (ParseException ex) {
+        Logger.getLogger(DATA_PENGGAJIAN.class.getName()).log(Level.SEVERE, null, ex);
+        JOptionPane.showMessageDialog(this, "Format tanggal salah: " + ex.getMessage());
+    } catch (Exception ex) {
+        Logger.getLogger(DATA_PENGGAJIAN.class.getName()).log(Level.SEVERE, null, ex);
+        JOptionPane.showMessageDialog(this, "Terjadi kesalahan: " + ex.getMessage());
+    }
+    }//GEN-LAST:event_tblGajiMouseClicked
 
-    private void bUbahActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bUbahActionPerformed
-        // TODO add your handling code here:
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-    String periode = dateFormat.format(jdTtl.getDate());
+    private void bGajiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bGajiActionPerformed
+        String idPenggajian = tfIdPenggajian.getText();
+    String idPegawai = (String) jcIdPegawai.getSelectedItem();
+    String idGaji = (String) jcIdGaji.getSelectedItem();
+    java.util.Date periode = jdPeriode.getDate();
+    String totalGaji = tfTotalGaji.getText();
+    
+    if (idPenggajian.isEmpty() || idPegawai == null || idGaji == null || periode == null || totalGaji.isEmpty()) {
+        JOptionPane.showMessageDialog(this, "Mohon isi semua field!", "Error", JOptionPane.ERROR_MESSAGE);
+        return;
+    }
+    
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+    String periodeStr = sdf.format(periode);
     
     try {
-        Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/db_penggajian", "root", "");
-        String sql = "UPDATE penggajian SET pegawai_id=?, periode=?, total_gaji=? WHERE id=?";
-        PreparedStatement statement = connection.prepareStatement(sql);
+        Connection connection = Koneksi.getConnection();
+        String query = "INSERT INTO penggajian (id, pegawai_id, gaji_id, periode, total_gaji) VALUES (?, ?, ?, ?, ?)";
+        PreparedStatement preparedStatement = connection.prepareStatement(query);
+        preparedStatement.setString(1, idPenggajian);
+        preparedStatement.setString(2, idPegawai);
+        preparedStatement.setString(3, idGaji);
+        preparedStatement.setString(4, periodeStr);
+        preparedStatement.setString(5, totalGaji);
         
-        // Pastikan pegawai_id yang valid dari tabel pegawai
-        int pegawaiId = getValidPegawaiId(tfNik.getText());
-        if (pegawaiId == -1) {
-            JOptionPane.showMessageDialog(this, "Pegawai dengan NIK tersebut tidak ditemukan.");
-            return;
-        }
+        preparedStatement.executeUpdate();
+        JOptionPane.showMessageDialog(this, "Data penggajian berhasil disimpan!", "Success", JOptionPane.INFORMATION_MESSAGE);
         
-        statement.setInt(1, pegawaiId); // Pegawai ID
-        statement.setString(2, periode); // Periode
-        statement.setDouble(3, Double.parseDouble(tfGajiPokok.getText()) + Double.parseDouble(tfTunjangan.getText()) - Double.parseDouble(tfPotongan.getText())); // Total Gaji
-        statement.setInt(4, Integer.parseInt(tfId.getText())); // ID Penggajian
-
-        statement.executeUpdate();
-        statement.close();
+        preparedStatement.close();
         connection.close();
         
-        model.setRowCount(0); 
-        loadDataPenggajian();
-        JOptionPane.showMessageDialog(this, "Data berhasil disimpan");
+        // Clear fields after saving
+        tfIdPenggajian.setText("");
+        jcIdPegawai.setSelectedIndex(-1);
+        jcIdGaji.setSelectedIndex(-1);
+        jdPeriode.setDate(null);
+        tfNamaPegawai.setText("");
+        tfTotalGaji.setText("");
+        
+        // Reload data to table if needed
+        loadDataPegawai();
     } catch (SQLException e) {
         e.printStackTrace();
-        JOptionPane.showMessageDialog(this, "Gagal mengubah data");
+        JOptionPane.showMessageDialog(this, "Terjadi kesalahan saat menyimpan data penggajian: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
     }
-    }//GEN-LAST:event_bUbahActionPerformed
+    }//GEN-LAST:event_bGajiActionPerformed
 
     private void bCariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bCariActionPerformed
-        // TODO add your handling code here:
-        try {
-        model.setRowCount(0); // Hapus data yang ada
-        Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/db_penggajian", "root", "");
-        String sql = "SELECT p.id, p.periode, k.nik, k.jabatan, g.gaji_pokok, g.tunjangan, g.potongan " +
-                     "FROM penggajian p " +
-                     "JOIN pegawai k ON p.pegawai_id = k.id_pegawai " +
-                     "JOIN data_gaji g ON p.pegawai_id = g.pegawai_id " +
-                     "WHERE k.id_pegawai LIKE ?"; // Pencarian berdasarkan ID Pegawai
-        PreparedStatement statement = connection.prepareStatement(sql);
-        statement.setString(1, "%" + tfCari.getText() + "%");
-        ResultSet resultSet = statement.executeQuery();
+       model.setRowCount(0); // Membersihkan data yang ada
+    try {
+        Connection connection = Koneksi.getConnection();
+
+        String query = "SELECT * FROM penggajian WHERE id LIKE ?";
+        PreparedStatement preparedStatement = connection.prepareStatement(query);
+        String searchText = "%" + tfCari.getText() + "%";
+        preparedStatement.setString(1, searchText);
+
+        ResultSet resultSet = preparedStatement.executeQuery();
 
         while (resultSet.next()) {
             Object[] row = {
                 resultSet.getString("id"),
+                resultSet.getString("pegawai_id"),
+                resultSet.getString("gaji_id"),
                 resultSet.getString("periode"),
-                resultSet.getString("nik"),
-                resultSet.getString("jabatan"),
-                resultSet.getString("gaji_pokok"),
-                resultSet.getString("tunjangan"),
-                resultSet.getString("potongan")
+                resultSet.getString("total_gaji")
             };
             model.addRow(row);
         }
 
         resultSet.close();
-        statement.close();
+        preparedStatement.close();
         connection.close();
-    } catch (SQLException e) {
+    } catch (Exception e) {
         e.printStackTrace();
-    }        
+    }
     }//GEN-LAST:event_bCariActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
@@ -760,7 +694,7 @@ private int getValidPegawaiId(String nik) {
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         // TODO add your handling code here:
-        DATA_GAJI dataGaji = new DATA_GAJI();
+        DATA_PENGGAJIAN dataGaji = new DATA_PENGGAJIAN();
         dataGaji.setVisible(true);
         dispose();
     }//GEN-LAST:event_jButton3ActionPerformed
@@ -780,11 +714,152 @@ private int getValidPegawaiId(String nik) {
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // TODO add your handling code here:
-        UBAH_PASSWORD ubahPassword = new UBAH_PASSWORD();
-        ubahPassword.setVisible(true);
-        dispose();
+    
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void bGajiMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_bGajiMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_bGajiMouseClicked
+
+    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+        // TODO add your handling code here:
+        LOGIN login = new LOGIN();
+        login.setVisible(true);
+        dispose();
+    }//GEN-LAST:event_jButton6ActionPerformed
+
+    private void tfIdPenggajianActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfIdPenggajianActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tfIdPenggajianActionPerformed
+
+    private void tfNamaPegawaiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfNamaPegawaiActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tfNamaPegawaiActionPerformed
+
+    private void bHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bHapusActionPerformed
+        model.setRowCount(0);
+        String idPenggajian = tfIdPenggajian.getText();
+    
+    if (idPenggajian.isEmpty()) {
+        JOptionPane.showMessageDialog(this, "Mohon pilih data penggajian yang akan dihapus!", "Error", JOptionPane.ERROR_MESSAGE);
+        return;
+    }
+    
+    int confirm = JOptionPane.showConfirmDialog(this, "Apakah Anda yakin ingin menghapus data penggajian ini?", "Konfirmasi Hapus", JOptionPane.YES_NO_OPTION);
+    if (confirm != JOptionPane.YES_OPTION) {
+        return;
+    }
+    
+    try {
+        Connection connection = Koneksi.getConnection();
+        String query = "DELETE FROM penggajian WHERE id = ?";
+        PreparedStatement preparedStatement = connection.prepareStatement(query);
+        preparedStatement.setString(1, idPenggajian);
+        
+        int rowsDeleted = preparedStatement.executeUpdate();
+        if (rowsDeleted > 0) {
+            JOptionPane.showMessageDialog(this, "Data penggajian berhasil dihapus!", "Success", JOptionPane.INFORMATION_MESSAGE);
+            
+            // Clear fields after deleting
+            tfIdPenggajian.setText("");
+            jcIdPegawai.setSelectedIndex(-1);
+            jcIdGaji.setSelectedIndex(-1);
+            jdPeriode.setDate(null);
+            tfNamaPegawai.setText("");
+            tfTotalGaji.setText("");
+            
+            // Reload data to table
+            model.setRowCount(0);
+            loadDataPegawai();
+        } else {
+            JOptionPane.showMessageDialog(this, "Data penggajian tidak ditemukan!", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+        
+        preparedStatement.close();
+        connection.close();
+    } catch (SQLException e) {
+        e.printStackTrace();
+        JOptionPane.showMessageDialog(this, "Terjadi kesalahan saat menghapus data penggajian: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+    }
+    }//GEN-LAST:event_bHapusActionPerformed
+
+    private void bUbahActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bUbahActionPerformed
+    model.setRowCount(0);   
+    String idPenggajian = tfIdPenggajian.getText();
+    String idPegawai = (String) jcIdPegawai.getSelectedItem();
+    String idGaji = (String) jcIdGaji.getSelectedItem();
+    java.util.Date periode = jdPeriode.getDate();
+    String totalGaji = tfTotalGaji.getText();
+    
+    if (idPenggajian.isEmpty() || idPegawai == null || idGaji == null || periode == null || totalGaji.isEmpty()) {
+        JOptionPane.showMessageDialog(this, "Mohon isi semua field!", "Error", JOptionPane.ERROR_MESSAGE);
+        return;
+    }
+    
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+    String periodeStr = sdf.format(periode);
+    
+    try {
+        Connection connection = Koneksi.getConnection();
+        String query = "UPDATE penggajian SET pegawai_id = ?, gaji_id = ?, periode = ?, total_gaji = ? WHERE id = ?";
+        PreparedStatement preparedStatement = connection.prepareStatement(query);
+        preparedStatement.setString(1, idPegawai);
+        preparedStatement.setString(2, idGaji);
+        preparedStatement.setString(3, periodeStr);
+        preparedStatement.setString(4, totalGaji);
+        preparedStatement.setString(5, idPenggajian);
+        
+        int rowsUpdated = preparedStatement.executeUpdate();
+        if (rowsUpdated > 0) {
+            JOptionPane.showMessageDialog(this, "Data penggajian berhasil diubah!", "Success", JOptionPane.INFORMATION_MESSAGE);
+            
+            // Clear fields after updating
+            tfIdPenggajian.setText("");
+            jcIdPegawai.setSelectedIndex(-1);
+            jcIdGaji.setSelectedIndex(-1);
+            jdPeriode.setDate(null);
+            tfNamaPegawai.setText("");
+            tfTotalGaji.setText("");
+            
+            // Reload data to table
+             model.setRowCount(0);
+            loadDataPegawai();
+        } else {
+            JOptionPane.showMessageDialog(this, "Data penggajian tidak ditemukan!", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+        
+        preparedStatement.close();
+        connection.close();
+    } catch (SQLException e) {
+        e.printStackTrace();
+        JOptionPane.showMessageDialog(this, "Terjadi kesalahan saat mengubah data penggajian: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+    }
+    }//GEN-LAST:event_bUbahActionPerformed
+
+    private void bBatalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bBatalActionPerformed
+        tfIdPenggajian.setText("");
+    jcIdPegawai.setSelectedIndex(-1); // Mengatur JComboBox ke posisi tidak ada yang dipilih
+    jcIdGaji.setSelectedIndex(-1); // Mengatur JComboBox ke posisi tidak ada yang dipilih
+    jdPeriode.setDate(null); // Mengatur JDateChooser ke null
+    tfNamaPegawai.setText("");
+    tfTotalGaji.setText("");
+    }//GEN-LAST:event_bBatalActionPerformed
+
+    private void jcIdPegawaiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcIdPegawaiActionPerformed
+        // TODO add your handling code here:
+        String selectedId = (String) jcIdPegawai.getSelectedItem();
+            if (selectedId != null && !selectedId.isEmpty()) {
+                      loadPegawaiDetails(selectedId);
+             }
+    }//GEN-LAST:event_jcIdPegawaiActionPerformed
+
+    private void jcIdGajiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcIdGajiActionPerformed
+        // TODO add your handling code here:
+        String selectedId = (String) jcIdGaji.getSelectedItem();
+             if (selectedId != null && !selectedId.isEmpty()) {
+                loadGajiDetails(selectedId);
+         }
+    }//GEN-LAST:event_jcIdGajiActionPerformed
 
     /**
      * @param args the command line arguments
@@ -819,6 +894,14 @@ private int getValidPegawaiId(String nik) {
         //</editor-fold>
         //</editor-fold>
         //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -833,10 +916,8 @@ private int getValidPegawaiId(String nik) {
     private javax.swing.JButton bCari;
     private javax.swing.JButton bGaji;
     private javax.swing.JButton bHapus;
-    private javax.swing.JButton bSimpan;
     private javax.swing.JButton bUbah;
     private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton11;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
@@ -845,9 +926,7 @@ private int getValidPegawaiId(String nik) {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
-    private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
-    private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -863,14 +942,14 @@ private int getValidPegawaiId(String nik) {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField2;
-    private com.toedter.calendar.JDateChooser jdTtl;
-    private javax.swing.JTable tblDataPenggajian;
+    private javax.swing.JComboBox<String> jcIdGaji;
+    private javax.swing.JComboBox<String> jcIdPegawai;
+    private com.toedter.calendar.JDateChooser jdPeriode;
+    private javax.swing.JTable tblGaji;
     private javax.swing.JTextField tfCari;
-    private javax.swing.JTextField tfGajiPokok;
-    private javax.swing.JTextField tfId;
-    private javax.swing.JTextField tfJabatan;
-    private javax.swing.JTextField tfNik;
-    private javax.swing.JTextField tfPotongan;
-    private javax.swing.JTextField tfTunjangan;
+    private javax.swing.JTextField tfIdPenggajian;
+    private javax.swing.JTextField tfNamaPegawai;
+    private javax.swing.JTextField tfTotalGaji;
     // End of variables declaration//GEN-END:variables
+
 }

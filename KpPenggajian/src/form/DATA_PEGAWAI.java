@@ -81,7 +81,8 @@ public class DATA_PEGAWAI extends javax.swing.JFrame {
         String alamat = jtAlamat.getText();
 
         try {
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/db_penggajian", "root", "");
+            Connection connection = Koneksi.getConnection();
+           
             String query = "UPDATE pegawai SET nama=?, nik=?, tanggal_lahir=?, jenis_kelamin=?, alamat=? WHERE id_pegawai=?";
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1, nama);
@@ -253,6 +254,11 @@ public class DATA_PEGAWAI extends javax.swing.JFrame {
         });
 
         jButton6.setText("LOGOUT");
+        jButton6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton6ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -567,7 +573,7 @@ public class DATA_PEGAWAI extends javax.swing.JFrame {
             String jenisKelamin = cbKelamin.getSelectedItem().toString();
 
             // Membuat koneksi ke database
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/db_penggajian", "root", "");
+            Connection connection = Koneksi.getConnection();
             Statement statement = connection.createStatement();
 
             // Membuat query untuk insert data
@@ -739,11 +745,15 @@ public class DATA_PEGAWAI extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // TODO add your handling code here:
-        UBAH_PASSWORD ubahPassword = new UBAH_PASSWORD();
-        ubahPassword.setVisible(true);
-        dispose();
+        
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+        // TODO add your handling code here:
+        LOGIN login = new LOGIN();
+        login.setVisible(true);
+        dispose();
+    }//GEN-LAST:event_jButton6ActionPerformed
 
     /**
      * @param args the command line arguments
